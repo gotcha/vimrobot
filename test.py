@@ -1,9 +1,13 @@
 import pty
 
 
-def readToTerminal(term, fd, timeout=0.1):
+def readToTerminal(vim, timeout=0.1):
     import os
     import select
+
+    fd = vim.fd
+    term = vim.term
+
     readable = []
     while not fd in readable:
         readable, writable, errp = select.select([fd], [], [], 0.01)
@@ -17,29 +21,36 @@ def readToTerminal(term, fd, timeout=0.1):
     print '=' * 80
 
 
-def sendToVim(fd, command):
+def sendToVim(vim, command):
     import os
-#    readable, writable, errp = select.select([fd], [fd], [])
-#    while fd not in writable:
-#        readable, writable, errp = select.select([fd], [fd], [])
     print repr(command)
     print '-' * 80
-    os.write(fd, command)
+    os.write(vim.fd, command)
+
+
+class ControledVim(object):
+
+    def __init__(self, term, fd):
+        self.term = term
+        self.fd = fd
 
 pid, fd = pty.fork()
 if pid == 0:
-    pty.spawn(['vim'])
+    pty.spawn(['vim', '-u', 'NONE', 'afile.py'])
 else:
     from TermEmulator import V102Terminal
     term = V102Terminal(24, 80)
-    readToTerminal(term, fd)
-    sendToVim(fd, ':e bla.txt\n')
-    readToTerminal(term, fd)
-    sendToVim(fd, 'Goabcd')
-    readToTerminal(term, fd)
-    sendToVim(fd, '\x1b:w')
-    readToTerminal(term, fd)
-    sendToVim(fd, '\n')
-    readToTerminal(term, fd)
-    sendToVim(fd, ':q\n')
-    readToTerminal(term, fd)
+    vim = ControledVim(term, fd)
+    readToTerminal(vim)
+    #sendToVim(vim, ':e afile.py\n')
+    #readToTerminal(vim)
+    sendToVim(vim, ':set nocp\n')
+    readToTerminal(vim)
+    sendToVim(vim, 'Goabcd')
+    readToTerminal(vim)
+    sendToVim(vim, '\x1b:w')
+    readToTerminal(vim)
+    sendToVim(vim, '\n')
+    readToTerminal(vim)
+    sendToVim(vim, ':q\n')
+    readToTerminal(vim)
