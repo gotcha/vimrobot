@@ -1,38 +1,35 @@
 import pty
 
 
-def readToTerminal(vim, timeout=0.1):
-    import os
-    import select
-
-    fd = vim.fd
-    term = vim.term
-
-    readable = []
-    while not fd in readable:
-        readable, writable, errp = select.select([fd], [], [], 0.01)
-    while fd in readable:
-        result = os.read(fd, 8192)
-        term.ProcessInput(result)
-        readable, writable, errp = select.select([fd], [], [], timeout)
-    rows = term.screen
-    for row in rows:
-        print row.tostring()
-    print '=' * 80
-
-
-def sendToVim(vim, command):
-    import os
-    print repr(command)
-    print '-' * 80
-    os.write(vim.fd, command)
-
-
 class ControledVim(object):
 
     def __init__(self, term, fd):
         self.term = term
         self.fd = fd
+
+    def readToTerminal(self, timeout=0.1):
+        import os
+        import select
+
+        fd = self.fd
+        readable = []
+        while not fd in readable:
+            readable, writable, errp = select.select([fd], [], [], 0.01)
+        while fd in readable:
+            result = os.read(fd, 8192)
+            term.ProcessInput(result)
+            readable, writable, errp = select.select([fd], [], [], timeout)
+        rows = self.term.screen
+        for row in rows:
+            print row.tostring()
+        print '=' * 80
+
+    def sendToVim(self, command):
+        import os
+        print repr(command)
+        print '-' * 80
+        os.write(self.fd, command)
+
 
 pid, fd = pty.fork()
 if pid == 0:
@@ -41,16 +38,16 @@ else:
     from TermEmulator import V102Terminal
     term = V102Terminal(24, 80)
     vim = ControledVim(term, fd)
-    readToTerminal(vim)
-    #sendToVim(vim, ':e afile.py\n')
-    #readToTerminal(vim)
-    sendToVim(vim, ':set nocp\n')
-    readToTerminal(vim)
-    sendToVim(vim, 'Goabcd')
-    readToTerminal(vim)
-    sendToVim(vim, '\x1b:w')
-    readToTerminal(vim)
-    sendToVim(vim, '\n')
-    readToTerminal(vim)
-    sendToVim(vim, ':q\n')
-    readToTerminal(vim)
+    vim.readToTerminal()
+    #vim.sendToVim(':e afile.py\n')
+    #vim.readToTerminal()
+    vim.sendToVim(':set nocp\n')
+    vim.readToTerminal()
+    vim.sendToVim('Goabcd')
+    vim.readToTerminal()
+    vim.sendToVim('\x1b:w')
+    vim.readToTerminal()
+    vim.sendToVim('\n')
+    vim.readToTerminal()
+    vim.sendToVim(':q\n')
+    vim.readToTerminal()
