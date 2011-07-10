@@ -1,6 +1,3 @@
-import pty
-
-
 class Controller(object):
 
     def __init__(self, term, fd):
@@ -29,15 +26,33 @@ class Controller(object):
         os.write(self.fd, command)
 
 
-def make_vim():
+def make(vim_command='vim', rcfiles=[], files_to_edit=[]):
+    import pty
+
     pid, fd = pty.fork()
-    if pid == 0:
-        pty.spawn(['vim', '-u', 'NONE', 'afile.py'])
-    else:
+
+    if pid != 0: # parent process emulates terminal
         from TermEmulator import V102Terminal
         term = V102Terminal(24, 80)
         vim = Controller(term, fd)
-    return vim
+        return vim
+    else: # child process runs vim
+        spawn_vim(vim_command, rcfiles, files_to_edit)
+
+
+def spawn_vim(vim_command='vim', rcfiles=[], files_to_edit=[]):
+    import pty
+
+    command = [vim_command, '-u']
+
+    if rcfiles:
+        command.extend(rcfiles)
+    else:
+        command.append('NONE')
+
+    command.extend(files_to_edit)
+
+    pty.spawn(command)
 
 
 def send_command(vim, command):
@@ -54,10 +69,8 @@ def print_status(vim):
 
 
 def main():
-    vim = make_vim()
+    vim = make(files_to_edit=['afile.py'])
     print_status(vim)
-    #send_command(vim, ':e afile.py\n')
-    #print_status(vim)
     send_command(vim, ':set nocp\n')
     print_status(vim)
     send_command(vim, 'Goabcd')
