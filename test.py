@@ -1,4 +1,4 @@
-import vimdriver
+from vimfunctional import vimdriver
 
 
 def send_command(vim, command):
