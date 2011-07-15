@@ -1,7 +1,7 @@
-.mr.developer.cfg                                                                                                                                 
-afile.py                                                                                                                                          
-bin/                                                                                                                                              
-devel/                                                                                                                                            
-develop-eggs/                                                                                                                                     
-include/                                                                                                                                          
-lib/ 
+.mr.developer.cfg
+afile.py
+bin
+devel
+develop-eggs
+include
+lib
