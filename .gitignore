@@ -5,3 +5,4 @@ devel
 develop-eggs
 include
 lib
+gotcha-setuptools-scripts
