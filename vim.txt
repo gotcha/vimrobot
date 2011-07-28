@@ -1,0 +1,25 @@
+*** Settings ***
+Library     vimfunctional
+
+Test Setup  Start
+Test Teardown  Stop
+
+*** Variables ***
+
+*** Test cases ***
+
+Startup
+    Is on screen  7.2
+
+On screen
+    Send keys  :version\n
+    Is on screen  Press ENTER
+
+On command line
+    Send keys  :version
+    Is on command line  :version
+
+*** Keywords ***
+Start  Start vim
+Stop  Stop vim
+    

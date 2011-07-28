@@ -6,3 +6,6 @@ develop-eggs
 include
 lib
 gotcha-setuptools-scripts
+log.html
+output.xml
+report.html
