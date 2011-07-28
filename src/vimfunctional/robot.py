@@ -20,12 +20,12 @@ class vimfunctional(object):
             if text in row.tostring():
                 return
         screen = '\n'.join([row.tostring() for row in rows])
-        msg = '%s not on screen.\n\n%s' % (text, screen)
+        msg = '"%s" not on screen:\n\n%s' % (text, screen)
         raise AssertionError(msg)
 
     def is_on_command_line(self, text):
         self.vim.update()
         command_line = self.vim.rows[23].tostring()
         if text not in command_line:
-            msg = '%s not on command line.\n\n%s' % (text, command_line)
+            msg = '"%s" not on command line:\n\n%s' % (text, command_line)
             raise AssertionError(msg)
