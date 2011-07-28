@@ -19,7 +19,7 @@ class vimfunctional(object):
             print row.tostring()
             if text in row.tostring():
                 return
-        screen = '\n'.join([row.tostring() for row in rows])
+        screen = self._get_screen()
         msg = '"%s" not on screen:\n\n%s' % (text, screen)
         raise AssertionError(msg)
 
@@ -29,3 +29,8 @@ class vimfunctional(object):
         if text not in command_line:
             msg = '"%s" not on command line:\n\n%s' % (text, command_line)
             raise AssertionError(msg)
+
+    def _get_screen(self):
+        rows = self.vim.rows
+        screen = '\n'.join([row.tostring() for row in rows])
+        return screen
