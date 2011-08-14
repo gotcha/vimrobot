@@ -1,5 +1,5 @@
 *** Settings ***
-Library     vimfunctional
+Library     vimrobot
 
 Test Setup  Start
 Test Teardown  Stop

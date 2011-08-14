@@ -1,7 +1,7 @@
 import vimdriver
 
 
-class vimfunctional(object):
+class vimrobot(object):
 
     def start_vim(self):
         self.vim = vimdriver.make(rcfiles=[], files_to_edit=[])

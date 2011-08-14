@@ -6,13 +6,13 @@ long_description = (file('README.rst').read() +
     '\n\n' + file('HISTORY.txt').read())
 
 
-setup(name='vimfunctional',
+setup(name='vimrobot',
       version=version,
       description="Vim functional tests support",
       long_description=long_description,
       author="Godefroid Chapelle",
       author_email="gotcha@bubblenet.be",
-      url="https://github.com/gotcha/vimfunctional",
+      url="https://github.com/gotcha/vimrobot",
       license="GPL",
       packages=find_packages('src'),
       package_dir={'': 'src'},
