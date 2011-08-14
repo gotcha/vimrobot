@@ -12,10 +12,16 @@ Startup
     Is on screen  7.2
 
 On screen
+    Is on screen  7.2
+    Is on screen  by Bram
+
+Send keys
+    Is on screen  7.2
     Send keys  :version\n
     Is on screen  Press ENTER
 
 On command line
+    Is on screen  7.2
     Send keys  :version
     Is on command line  :version
 

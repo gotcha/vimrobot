@@ -1,21 +1,29 @@
 class Controller(object):
 
-    def __init__(self, term, fd):
+    def __init__(self, term, fd, child):
         self.term = term
         self.fd = fd
+        self.child = child
 
-    def update(self, timeout=0.1):
+    def stop(self):
+        import os
+        os.kill(self.child, 9)
+
+    def updated(self, timeout=0.01):
         import os
         import select
 
         fd = self.fd
-        readable = []
-        while not fd in readable:
-            readable, writable, errp = select.select([fd], [], [], 0.01)
-        while fd in readable:
-            result = os.read(fd, 8192)
-            self.term.ProcessInput(result)
-            readable, writable, errp = select.select([fd], [], [], timeout)
+        readable, writable, errp = select.select([fd], [], [], timeout)
+        updated = False
+        if fd in readable:
+            bytes_read = os.read(fd, 1024)
+            updated = bool(bytes_read)
+            if updated:
+                self.term.ProcessInput(bytes_read)
+            else:
+                print 'not updated'
+        return updated
 
     @property
     def rows(self):
@@ -24,6 +32,16 @@ class Controller(object):
     def send_keys(self, command):
         import os
         os.write(self.fd, command)
+
+    def get_screen(self):
+        result = []
+        for index, row in enumerate(self.rows):
+            result.append(self.format_row(index, row))
+        screen = '\n'.join(result)
+        return screen
+
+    def format_row(self, index, row):
+        return '%02d %s' % (index, row.tostring())
 
 
 def make(vim_command='vim', rcfiles=[], files_to_edit=[]):
@@ -34,7 +52,7 @@ def make(vim_command='vim', rcfiles=[], files_to_edit=[]):
     if pid != 0:  # parent process emulates terminal
         from TermEmulator import V102Terminal
         term = V102Terminal(24, 80)
-        vim = Controller(term, fd)
+        vim = Controller(term, fd, pid)
         return vim
     else:  # child process runs vim
         spawn_vim(vim_command, rcfiles, files_to_edit)
