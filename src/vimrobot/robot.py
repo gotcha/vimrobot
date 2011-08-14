@@ -29,7 +29,6 @@ class vimrobot(object):
     def _is_on_screen(self, text):
         rows = self.vim.rows
         for index, row in enumerate(rows):
-            print self.vim.format_row(index, row)
             if text in row.tostring():
                 return True
         return False
