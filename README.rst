@@ -1,7 +1,7 @@
 vimrobot
 ========
 
-``vimrobot`` is a python module to write functional tests of vim with
+``vimrobot`` is a Python package to write functional tests of Vim with
 ``robotframework`` Python library.
 
 Development
