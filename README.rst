@@ -16,6 +16,4 @@ How to develop ``vimrobot`` from github::
   virtualenv-2.6 .
   bin/python bootstrap.py
   bin/buildout -Nvt 5
-  bin/develop co robot
-  bin/buildout -Nvt 5
   bin/pybot vim.txt
