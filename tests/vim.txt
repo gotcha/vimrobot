@@ -5,19 +5,34 @@ Test Teardown  Stop
 
 *** Variables ***
 
+${TESTSDIR}  ${EXECDIR}/tests
+${FILESDIR}  ${TESTSDIR}/files
+${RCDIR}  ${TESTSDIR}/rc
+
 *** Test cases ***
 
 Startup
     Start
     Is on screen  7.2
 
+Pwd
+    Start
+    Is on screen  7.2
+    Send keys  :pwd\n
+    Is on screen  ${EXECDIR}
+
+Startup with rc
+    Start vim  rcfiles=${RCDIR}/minimal.vim
+    Send keys  \n
+    Is on screen  PHONY
+
 Startup with file
-    Start vim  files_to_edit=Makefile
+    Start vim  files_to_edit=${FILESDIR}/PHONY.txt  rcfiles=${RCDIR}/rc.vim
     Is on screen  PHONY 
 
 Startup with files
-    ${files} =  Create list  Makefile  README.rst
-    Start vim  files_to_edit=${files}
+    ${files} =  Create list  ${FILESDIR}/PHONY.txt  ${FILESDIR}/vimrobot.txt
+    Start vim  files_to_edit=${files}  rcfiles=${RCDIR}/rc.vim
     Is on screen  PHONY
     Send keys  :bn\n
     Is on screen  vimrobot

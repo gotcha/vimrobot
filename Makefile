@@ -17,7 +17,7 @@ buildout:
 .PHONY: test
 test:
 	if ! test -f bin/pybot;then make buildout;fi
-	bin/pybot vim.txt
+	TERM=vt100; bin/pybot tests/vim.txt
 
 .PHONY: cleanall
 cleanall:
