@@ -1,24 +1,20 @@
 #!/usr/bin/make
 #
+all: test
 
-.PHONY: install
-install: bootstrap buildout
-
-.PHONY: bootstrap
-bootstrap:
+bin/python:
 	virtualenv-2.6 --no-site-packages .
+
+bin/buildout: bin/python bootstrap.py buildout.cfg
 	./bin/python bootstrap.py
 
-.PHONY: buildout
-buildout:
-	if ! test -f bin/buildout;then make bootstrap;fi
-	bin/buildout -vt 5
+bin/pybot: bin/buildout
+	./bin/buildout -vt 5
 
 .PHONY: test
-test:
-	if ! test -f bin/pybot;then make buildout;fi
+test: bin/pybot
 	TERM=vt100; bin/pybot tests/vim.txt
 
 .PHONY: cleanall
 cleanall:
-	rm -fr develop-eggs downloads eggs parts .installed.cfg
+	rm -fr bin develop-eggs downloads eggs parts .installed.cfg
