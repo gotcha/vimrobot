@@ -1,7 +1,6 @@
 *** Settings ***
 Library     vimrobot
 
-Test Setup  Start
 Test Teardown  Stop
 
 *** Variables ***
@@ -9,18 +8,33 @@ Test Teardown  Stop
 *** Test cases ***
 
 Startup
+    Start
     Is on screen  7.2
 
+Startup with file
+    Start vim  files_to_edit=Makefile
+    Is on screen  PHONY 
+
+Startup with files
+    ${files} =  Create list  Makefile  README.rst
+    Start vim  files_to_edit=${files}
+    Is on screen  PHONY
+    Send keys  :bn\n
+    Is on screen  vimrobot
+
 On screen
+    Start
     Is on screen  7.2
     Is on screen  by Bram
 
 Send keys
+    Start
     Is on screen  7.2
     Send keys  :version\n
     Is on screen  Press ENTER
 
 On command line
+    Start
     Is on screen  7.2
     Send keys  :version
     Is on command line  :version

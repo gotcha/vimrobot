@@ -1,10 +1,23 @@
 import vimdriver
 
 
+def make_list(value):
+    if isinstance(value, unicode):
+        return [value]
+    elif isinstance(value, list):
+        return value
+    else:
+        raise TypeError('%s is not string or list.' % repr(value))
+
+
 class vimrobot(object):
 
-    def start_vim(self):
-        self.vim = vimdriver.make(rcfiles=[], files_to_edit=[])
+    def start_vim(self, rcfiles=[], files_to_edit=[]):
+        rcfiles = make_list(rcfiles)
+        print rcfiles
+        files_to_edit = make_list(files_to_edit)
+        print files_to_edit
+        self.vim = vimdriver.make(rcfiles=rcfiles, files_to_edit=files_to_edit)
 
     def stop_vim(self):
         self.vim.stop()
