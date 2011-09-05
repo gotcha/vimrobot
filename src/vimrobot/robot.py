@@ -1,3 +1,4 @@
+import os.path
 import vimdriver
 
 
@@ -10,13 +11,19 @@ def make_list(value):
         raise TypeError('%s is not string or list.' % repr(value))
 
 
+def check_files(files):
+    for file in files:
+        if not os.path.isfile(file):
+            raise ValueError('%s file does not exist.' % os.path.abspath(file))
+
+
 class vimrobot(object):
 
     def start_vim(self, rcfiles=[], files_to_edit=[]):
         rcfiles = make_list(rcfiles)
-        print rcfiles
+        check_files(rcfiles)
         files_to_edit = make_list(files_to_edit)
-        print files_to_edit
+        check_files(files_to_edit)
         self.vim = vimdriver.make(rcfiles=rcfiles, files_to_edit=files_to_edit)
 
     def stop_vim(self):
